@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce
+    restart: always
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --quiet --tries=1 --spider http://localhost:9000/_ping || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    ports:
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - portainer_network
+
+networks:
+  portainer_network:
+    driver: bridge
+
+volumes:
+  portainer_data:
